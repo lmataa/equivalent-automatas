@@ -56,7 +56,14 @@ def transform_DFA_aux(A):
     :param A: an automata
     :output A': a DFA
     '''
+
+
+    A = {'q': 0, 'Q': ['s0'], 'F': [], 'A': ['a', 'b'], 'f': { 0: {'a': [], 'b': [] } } }
+    
+
+
     pass
+
 
 def complete_DFA(A1, A2):
     '''
@@ -70,6 +77,7 @@ def complete_DFA_aux(A):
     :param A: a DFA
     :output A': a complete DFA
     '''
+
     pass
 
 def obtain_complement(A1, A2):
