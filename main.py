@@ -58,10 +58,18 @@ def transform_DFA_aux(A):
     '''
 
 
-    A = {'q': 0, 'Q': ['s0'], 'F': [], 'A': ['a', 'b'], 'f': { 0: {'a': [], 'b': [] } } }
+    Aux = {'q': 0, 'Q': 1, 'F': [], 'A': ['a', 'b'], 'f': { 0: {'a': [], 'b': [] } } } #The transformed automata at the start of the process
     
-
-
+    """
+    Incomplete and not useful
+    for state in range(0, A['Q']):
+        for letter in A['A']:
+            if len(A['f'][state][letter]) != 0:
+                Aux['f'][0][letter] = A['f'][state][letter]
+                print (Aux['f'][0][letter])
+                pass
+            pass
+    """
     pass
 
 
@@ -155,7 +163,7 @@ class automatas:
     '''
     A1 = {
         'q': 0,
-        'Q': ['p0', 'p1', 'p2', 'p3'], # Not needed indeed
+        'Q': 4,
         'F': [3],
         'A': ['a', 'b'],
         'f': {
@@ -180,7 +188,7 @@ class automatas:
 
     A2 = {
         'q': 0,
-        'Q': ['p0', 'p1', 'p2', 'p3', 'p4'], # Not needed indeed
+        'Q': 5,
         'F': [1, 2, 3, 4],
         'A': ['a', 'b'],
         'f': {
@@ -209,7 +217,7 @@ class automatas:
 
     A3 = {
         'q': 0,
-        'Q': ['c11', 'c21', 'c22'], # Not needed indeed
+        'Q': 3,
         'F': [1, 2],
         'A': ['a', 'b'],
         'f': {
@@ -230,7 +238,7 @@ class automatas:
 
     A4 = {
         'q': 0,
-        'Q': ['p0', 'p1', 'p2', 'p3', 'p4'], # Not needed indeed
+        'Q': 5,
         'F': [1, 2, 3, 4],
         'A': ['a', 'b'],
         'f': {
