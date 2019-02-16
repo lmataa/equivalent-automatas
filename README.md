@@ -1,2 +1,2 @@
-# equal-language-automatas
+# equal-automatas
 Checks if two given automatas accept the same languages
