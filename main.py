@@ -1,5 +1,5 @@
 import argparse
-# TODO pprint is useful to print json and dictionary-based structures, but will not make its way to the final release.
+# TODO: pprint is useful to print json and dictionary-based structures, but will not make its way to the final release.
 # Remove this prior to final release
 import pprint
 
@@ -44,7 +44,13 @@ class utilities():
             pp = pprint.PrettyPrinter(indent=4)
             pp.pprint(lines_data)
 
-def transform_DFA(A):
+def transform_DFA(A1, A2):
+    '''
+    Comment
+    '''
+    return transform_DFA_aux(A1), transform_DFA_aux(A2)
+
+def transform_DFA_aux(A):
     '''
     Checks if <A> is a DFA and transforms it into a Deterministic Finite Automata if its not
     :param A: an automata
@@ -52,7 +58,13 @@ def transform_DFA(A):
     '''
     pass
 
-def complete_DFA(A):
+def complete_DFA(A1, A2):
+    '''
+    Comment
+    '''
+    return complete_DFA_aux(A1), complete_DFA_aux(A2)
+
+def complete_DFA_aux(A):
     '''
     Transforms <A> into a complete DFA
     :param A: a DFA
@@ -60,7 +72,13 @@ def complete_DFA(A):
     '''
     pass
 
-def obtain_complement(A):
+def obtain_complement(A1, A2):
+    '''
+    Comment
+    '''
+    return obtain_complement_aux(A1), obtain_complement_aux(A2)
+
+def obtain_complement_aux(A):
     '''
     Obtains A's complement
     :param A: a complete DFA
@@ -77,13 +95,33 @@ def obtain_intersection(A1, A2):
     '''
     pass
 
-def is_empty(A):
+def language_is_empty(A):
     '''
     Checks if the accepted language of a given automata is empty/none
     :param A: an automata
     :output boolean: True if its language is empty, False otherwise
     '''
     pass
+
+def check_selection(A1, A2):
+    try:
+        if not max(A1, A2) < automatas.automata.__len__():
+            raise Exception('Automata selection must be an integer smaller than {}. Instead, you selected {}'.format(str(automatas.automata.__len__()), str(max(A1, A2))))
+        else:
+            return True
+    except TypeError as type_error:
+        raise Exception('Automata selection must be an integer. Instead, you selected "{}" and "{}"'.format(str(A1), str(A2)))
+
+def add_arguments(parser):
+    parser.add_argument("-nc", "--no-color", help="Do not colorize output", action="store_true")
+    parser.add_argument("-q", "--quiet", help="Only True or False is printed", action="store_true")
+    parser.add_argument("-v", "--verbose",
+                        help="Print information as the algorithm progresses",
+                        action="store_true")
+    parser.add_argument("-a1", "--automata-1", help="Automata 1, from the available list (0, 1, 2, 3)", type=int,
+                default=1)
+    parser.add_argument("-a2", "--automata-2", help="Automata 2, from the available list (0, 1, 2, 3)", type=int,
+                default=2)
 
 def main(A1, A2):
     '''
@@ -92,21 +130,140 @@ def main(A1, A2):
     :param A2: an automata
     :output boolean: True if equal, False otherwise
     '''
-    pass
+    A1, A2 = transform_DFA(A1, A2)
+    A1, A2 = complete_DFA(A1, A2)
+    B1, B2 = obtain_complement(A1, A2)
+    I1, I2 = obtain_intersection(A1, B2), obtain_intersection(A2, B1)
+    return (language_is_empty(I1) and language_is_empty(I2))
+    
+
+class automatas:
+    '''
+    - q0: initial state
+    - Q: states
+    - F: final states
+    - A: alphabet
+    - f: transitions
+    '''
+    A1 = {
+        'q': 0,
+        'Q': ['p0', 'p1', 'p2', 'p3'], # Not needed indeed
+        'F': [3],
+        'A': ['a', 'b'],
+        'f': {
+            0: {
+                'a': [1],
+                'b': [2]
+            },
+            1: {
+                'a': [1],
+                'b': [2]
+            },
+            2: {
+                'a': [3],
+                'b': [2]
+            },
+            3: {
+                'a': [1],
+                'b': [2]
+            }
+        }
+    }
+
+    A2 = {
+        'q': 0,
+        'Q': ['p0', 'p1', 'p2', 'p3', 'p4'], # Not needed indeed
+        'F': [1, 2, 3, 4],
+        'A': ['a', 'b'],
+        'f': {
+            0: {
+                'a': [1],
+                'b': [2]
+            },
+            1: {
+                'a': [],
+                'b': [3],
+            },
+            2: {
+                'a': [4],
+                'b': []
+            },
+            3: {
+                'a': [],
+                'b': [3]
+            },
+            4: {
+                'a': [4],
+                'b': []
+            }
+        }
+    }
+
+    A3 = {
+        'q': 0,
+        'Q': ['c11', 'c21', 'c22'], # Not needed indeed
+        'F': [1, 2],
+        'A': ['a', 'b'],
+        'f': {
+            0: {
+                'a': [1],
+                'b': [2]
+            },
+            1: {
+                'a': [],
+                'b': [1]
+            },
+            2: {
+                'a': [2],
+                'b': []
+            }
+        }
+    }
+
+    A4 = {
+        'q': 0,
+        'Q': ['p0', 'p1', 'p2', 'p3', 'p4'], # Not needed indeed
+        'F': [1, 2, 3, 4],
+        'A': ['a', 'b'],
+        'f': {
+            0: {
+                'a': [1],
+                'b': [2]
+            },
+            1: {
+                'a': [],
+                'b': [3],
+            },
+            2: {
+                'a': [4],
+                'b': []
+            },
+            3: {
+                'a': [],
+                'b': [3]
+            },
+            4: {
+                'a': [4],
+                'b': []
+            }
+        }
+    }
+    automata = [A1, A2, A3, A4]
+
 
 if __name__ == "__main__":
-    # TODO: make this try-except block decent
+    # TODO: make this try-except block decent (nice exceptions control)
     try:
         parser = argparse.ArgumentParser()
-        parser.add_argument("-nc", "--no-color", help="Do not colorize output", action="store_true")
-        parser.add_argument("-q", "--quiet", help="Only True or False is printed", action="store_true")
-        parser.add_argument("-v", "--verbose",
-                            help="Print information as the algorithm progresses",
-                            action="store_true")
+        add_arguments(parser)
         args = parser.parse_args()
         global util
         util = utilities(args)
+        if check_selection(args.automata_1, args.automata_2):
+            main(A1 = automatas.automata[args.automata_1], A2 = automatas.automata[args.automata_2])
+        else:
+            util.print_color("[!] Not a valid automata", bcolors.FAIL)
     except Exception as e:
         util.print_color("[-] An error ocurred!", bcolors.FAIL)
-        util.print_verbose(e)
+        util.print(e)
     
