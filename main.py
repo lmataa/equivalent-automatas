@@ -76,35 +76,19 @@ def transform_DFA_aux(A):
                     for a in A['f'][state][letter]:
                         stateAux.add(a)
 
-                stateAux = list(stateAux)
+                stateAux = list(stateAux) #this now holds the states that can be accessed from combination thorugh letter
+
+                position, statesAux, statesAuxNotUsed = isIn(statesAuxNotUsed, statesAux, stateAux)
+
+                Aux['f'][position][letter] = stateAux 
                 #print(stateAux)
-
-                
-
-            
-
-                """
-
-                    position, statesAux, prevContained = isIn(statesAux, A['f'][state][letter])
-                    
-                    Aux['f'][statesAux.index(combination)][letter].add(statesAux[position])
-
-                    if prevContained:
-                        pass
-                    else:
-                        Aux['Q']+=1
-                        statesAuxNotUsed.append(A['f'][state][letter])
-                        
-
-                    Aux['f'][position][letter].append(statesAux[position])
-
-                    """
-
-
+    print(Aux)
     pass
 
-def isIn(statesAux, statesA): #This functions checks if a combination of states is in an list and returns its index and true, or if it is not it adds it and returns its index and false
-    return 0, statesAux, True
+def isIn(statesAux, statesAuxNotUsed, combination): #This functions checks if a combination of states is in statesAux and returns its index, or if it is not it adds it to both StatesAux and StatesAuxNotUsed and returns its index on StatesAux
+    
+    
+    return 0, statesAux, statesAuxNotUsed
 
 def complete_DFA(A1, A2):
     '''
