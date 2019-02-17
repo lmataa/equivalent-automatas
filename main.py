@@ -60,18 +60,42 @@ def transform_DFA_aux(A):
 
     Aux = {'q': 0, 'Q': 1, 'F': [], 'A': ['a', 'b'], 'f': { 0: {'a': [], 'b': [] } } } #The transformed automata at the start of the process
     
+    statesAux = [[0]] # This array will hold the posible combinations of states from A that form one Aux state, contains the state 0 at first
+    
     """
-    Incomplete and not useful
-    for state in range(0, A['Q']):
-        for letter in A['A']:
-            if len(A['f'][state][letter]) != 0:
-                Aux['f'][0][letter] = A['f'][state][letter]
-                print (Aux['f'][0][letter])
-                pass
-            pass
+    for combination in statesAux:
+
+        for state in combination:
+
+            for letter in A['A']:
+
+                if len(A['f'][state][letter]) != 0:
+
+                    position, statesAux, prevContained = isIn(statesAux, A['f'][state][letter])
+                    
+                    Aux['f'][statesAux.index(combination)][letter].add(statesAux[position])
+
+                    if prevContained:
+                        pass
+                    else:
+                        Aux['Q']+=1
+                        
+
+                    Aux['f'][position][letter].append(statesAux[position])
+
+                    """
+                    Aux['f'][position][letter] = A['f'][state][letter]
+
+                    print (Aux['f'][position][letter])
+           
+                    """
     """
+
+
     pass
 
+def isIn(statesAux, statesA): #This functions checks if a combination of states is in an array and returns its index and true, or if it is not it adds it and returns its index and false
+    return 0, statesAux, True
 
 def complete_DFA(A1, A2):
     '''
