@@ -56,7 +56,7 @@ def transform_DFA_aux(A):
     :param A: an automata
     :output A': a DFA
     '''
-
+    """Doesn't work, needs polishing
 
     Aux = {'q': 0, 'Q': 1, 'F': [], 'A': ['a', 'b'], 'f': { 0: {'a': [], 'b': [] } } } #The transformed automata at the start of the process
     
@@ -66,31 +66,27 @@ def transform_DFA_aux(A):
     while(len(statesAuxNotUsed)!=0):
 
         combination = statesAuxNotUsed.pop(0)
-        Aux['f'].update({statesAux.index(combination): {'a': [], 'b': []}})
-
+        Aux['f'].update({statesAux.index(combination): {'a': [], 'b': []}}) # the index of the combination in statesAux is the number of the new state in Aux
 
         for letter in A['A']:
 
-            stateAux=set() #This set will hold the combination that later will be appended to statesAux, this is connected from combination by letter
+            stateAux=set() #This set will hold all the states of A that can be accessed from combination through letter
 
             for state in combination:
-                if len(A['f'][state][letter]) != 0:
-                    for a in A['f'][state][letter]:
-                        stateAux.add(a)
+                stateAux.update(A['f'][state][letter])
 
-            stateAux = list(stateAux) #this now holds the states that can be accessed from combination thorugh letter
-            if len(stateAux) > 0:
-                statesAux, statesAuxNotUsed = isIn(statesAux, statesAuxNotUsed, stateAux)
+            stateAux = list(stateAux) #this now holds all the states of A that can be accessed from combination thorugh letter
+            print (stateAux)
+            if len(stateAux)>0:
+                position, statesAux, statesAuxNotUsed = isIn(statesAux, statesAuxNotUsed, stateAux)
                 
-                Aux['f'][statesAux.index(combination)][letter] = stateAux 
+                Aux['f'][statesAux.index(combination)][letter] = [position]
                 #print(stateAux)
                 
     print(Aux)
     pass
-
+    """
 def isIn(statesAux, statesAuxNotUsed, combination): #This functions checks if a combination of states is in statesAux and returns its index, or if it is not it adds it to both StatesAux and StatesAuxNotUsed and returns its index on StatesAux
-    
-    """ Incomplete, the appending in case the combination is not present doesn't work"""
     position = 0
     inside = False
     
@@ -108,12 +104,13 @@ def isIn(statesAux, statesAuxNotUsed, combination): #This functions checks if a 
             inside = True
             position = statesAux.index(states)
         
-    
     if not inside:
         statesAux.append(combination)
-        statesAuxNotUsed.append(combination)        
+        statesAuxNotUsed.append(combination)
+        position = statesAux.index(combination)
+        print(statesAux)
     
-    return statesAux, statesAuxNotUsed
+    return position, statesAux, statesAuxNotUsed
 
 def complete_DFA(A1, A2):
     '''
