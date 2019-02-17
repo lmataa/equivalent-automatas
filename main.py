@@ -60,16 +60,30 @@ def transform_DFA_aux(A):
 
     Aux = {'q': 0, 'Q': 1, 'F': [], 'A': ['a', 'b'], 'f': { 0: {'a': [], 'b': [] } } } #The transformed automata at the start of the process
     
-    statesAux = [[0]] # This array will hold the posible combinations of states from A that form one Aux state, contains the state 0 at first
-    
-    """
-    for combination in statesAux:
+    statesAux = [[0]] # This list will hold the posible combinations of states from A that form one Aux state, contains the state 0 at first
+    statesAuxNotUsed = [[0]] #This list will hold the combinations that we haven't searched through yet
 
-        for state in combination:
+    while(len(statesAuxNotUsed)!=0):
 
-            for letter in A['A']:
+        combination = statesAuxNotUsed.pop()
 
+        for letter in A['A']:
+            for state in combination:
+
+                stateAux=set() #This set will hold the combination that later will be appended to statesAux, this is connected from combination by letter
+                
                 if len(A['f'][state][letter]) != 0:
+                    for a in A['f'][state][letter]:
+                        stateAux.add(a)
+
+                stateAux = list(stateAux)
+                #print(stateAux)
+
+                
+
+            
+
+                """
 
                     position, statesAux, prevContained = isIn(statesAux, A['f'][state][letter])
                     
@@ -79,22 +93,17 @@ def transform_DFA_aux(A):
                         pass
                     else:
                         Aux['Q']+=1
+                        statesAuxNotUsed.append(A['f'][state][letter])
                         
 
                     Aux['f'][position][letter].append(statesAux[position])
 
                     """
-                    Aux['f'][position][letter] = A['f'][state][letter]
-
-                    print (Aux['f'][position][letter])
-           
-                    """
-    """
 
 
     pass
 
-def isIn(statesAux, statesA): #This functions checks if a combination of states is in an array and returns its index and true, or if it is not it adds it and returns its index and false
+def isIn(statesAux, statesA): #This functions checks if a combination of states is in an list and returns its index and true, or if it is not it adds it and returns its index and false
     return 0, statesAux, True
 
 def complete_DFA(A1, A2):
