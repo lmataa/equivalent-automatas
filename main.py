@@ -65,30 +65,55 @@ def transform_DFA_aux(A):
 
     while(len(statesAuxNotUsed)!=0):
 
-        combination = statesAuxNotUsed.pop()
+        combination = statesAuxNotUsed.pop(0)
+        Aux['f'].update({statesAux.index(combination): {'a': [], 'b': []}})
+
 
         for letter in A['A']:
-            for state in combination:
 
-                stateAux=set() #This set will hold the combination that later will be appended to statesAux, this is connected from combination by letter
-                
+            stateAux=set() #This set will hold the combination that later will be appended to statesAux, this is connected from combination by letter
+
+            for state in combination:
                 if len(A['f'][state][letter]) != 0:
                     for a in A['f'][state][letter]:
                         stateAux.add(a)
 
-                stateAux = list(stateAux) #this now holds the states that can be accessed from combination thorugh letter
-
-                position, statesAux, statesAuxNotUsed = isIn(statesAuxNotUsed, statesAux, stateAux)
-
-                Aux['f'][position][letter] = stateAux 
+            stateAux = list(stateAux) #this now holds the states that can be accessed from combination thorugh letter
+            if len(stateAux) > 0:
+                statesAux, statesAuxNotUsed = isIn(statesAux, statesAuxNotUsed, stateAux)
+                
+                Aux['f'][statesAux.index(combination)][letter] = stateAux 
                 #print(stateAux)
+                
     print(Aux)
     pass
 
 def isIn(statesAux, statesAuxNotUsed, combination): #This functions checks if a combination of states is in statesAux and returns its index, or if it is not it adds it to both StatesAux and StatesAuxNotUsed and returns its index on StatesAux
     
+    """ Incomplete, the appending in case the combination is not present doesn't work"""
+    position = 0
+    inside = False
     
-    return 0, statesAux, statesAuxNotUsed
+    for states in statesAux:
+        
+        insideAux = True
+        if len(states) == len(combination):
+            for state in combination:
+                if not state in states:
+                    insideAux = False
+        else:
+            insideAux = False
+        
+        if insideAux:
+            inside = True
+            position = statesAux.index(states)
+        
+    
+    if not inside:
+        statesAux.append(combination)
+        statesAuxNotUsed.append(combination)        
+    
+    return statesAux, statesAuxNotUsed
 
 def complete_DFA(A1, A2):
     '''
