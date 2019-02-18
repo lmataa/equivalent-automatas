@@ -56,61 +56,49 @@ def transform_DFA_aux(A):
     :param A: an automata
     :output A': a DFA
     '''
-    """Doesn't work, needs polishing
-
     Aux = {'q': 0, 'Q': 1, 'F': [], 'A': ['a', 'b'], 'f': { 0: {'a': [], 'b': [] } } } #The transformed automata at the start of the process
-    
-    statesAux = [[0]] # This list will hold the posible combinations of states from A that form one Aux state, contains the state 0 at first
-    statesAuxNotUsed = [[0]] #This list will hold the combinations that we haven't searched through yet
 
-    while(len(statesAuxNotUsed)!=0):
+    statesAux = [set([0])] # This list will hold the posible combinations of states from A that form one Aux state, contains the state 0 at first
+    statesAuxNotUsed = [set([0])] #This list will hold the combinations that we haven't searched through yet
 
-        combination = statesAuxNotUsed.pop(0)
-        Aux['f'].update({statesAux.index(combination): {'a': [], 'b': []}}) # the index of the combination in statesAux is the number of the new state in Aux
+    #Sets are used for combinations as they hold no order
+
+    while(len(statesAuxNotUsed)!=0): #This process will repeat itself until all posible combinations of states from A that form Aux are examinated 
+        
+        combination = statesAuxNotUsed.pop(0) #combination now holds the combination that is being used
+        Aux['f'].update({statesAux.index(combination): {'a': [], 'b': []}}) #The structure to hold the connections is prepared
+        
+        #print(f"This is the combination from A: {combination}")
+        
+        #Now we have to check what other states is that combination connected through a letter in A
 
         for letter in A['A']:
 
-            stateAux=set() #This set will hold all the states of A that can be accessed from combination through letter
+            newCombination=set() #This list holds all the states that can be accessed through letter from combination
 
-            for state in combination:
-                stateAux.update(A['f'][state][letter])
+            for state in combination: #we cycle through each state in combination and add the new states that can be accesed
 
-            stateAux = list(stateAux) #this now holds all the states of A that can be accessed from combination thorugh letter
-            print (stateAux)
-            if len(stateAux)>0:
-                position, statesAux, statesAuxNotUsed = isIn(statesAux, statesAuxNotUsed, stateAux)
+                newCombination.update(A['f'][state][letter])
+            """
+            Now that we have the combination we have to include it in the list of statesAux and statesAuxNot used if it wasn't before
+            and in Aux connect the combination through letter to new combination.
+            the indexes for both will be their position in statesAux
+            """
+            #print(f"This is connected in Aux to {newCombination}")
+            if newCombination != set():
+                if newCombination not in statesAux:
+                    statesAux.append(newCombination)
+                    statesAuxNotUsed.append(newCombination)
+                    #print("needs to be added")
+                    #print(f"Added to statesAux {statesAux} and statesAuxNotUsed {statesAuxNotUsed}")
+
+                #print(f"This combination is in the position {statesAux.index(combination)}")
                 
-                Aux['f'][statesAux.index(combination)][letter] = [position]
-                #print(stateAux)
-                
+                Aux['f'][statesAux.index(combination)][letter] = [statesAux.index(newCombination)]
+
+    print(A)
+    print(statesAux)
     print(Aux)
-    pass
-    """
-def isIn(statesAux, statesAuxNotUsed, combination): #This functions checks if a combination of states is in statesAux and returns its index, or if it is not it adds it to both StatesAux and StatesAuxNotUsed and returns its index on StatesAux
-    position = 0
-    inside = False
-    
-    for states in statesAux:
-        
-        insideAux = True
-        if len(states) == len(combination):
-            for state in combination:
-                if not state in states:
-                    insideAux = False
-        else:
-            insideAux = False
-        
-        if insideAux:
-            inside = True
-            position = statesAux.index(states)
-        
-    if not inside:
-        statesAux.append(combination)
-        statesAuxNotUsed.append(combination)
-        position = statesAux.index(combination)
-        print(statesAux)
-    
-    return position, statesAux, statesAuxNotUsed
 
 def complete_DFA(A1, A2):
     '''
@@ -261,7 +249,7 @@ class automatas:
         'A': ['a', 'b'],
         'f': {
             0: {
-                'a': [1],
+                'a': [1,2],
                 'b': [2]
             },
             1: {
