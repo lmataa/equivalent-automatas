@@ -116,12 +116,21 @@ def complete_DFA(A1, A2):
 
 def complete_DFA_aux(A):
     '''
-    Transforms <A> into a complete DFA
+    Transforms <A> into a complete DFA. We already know here that A is not complete
     :param A: a DFA
     :output A': a complete DFA
     '''
-
-    pass
+    added_death_state = False
+    for state in A['f']:
+        for transition in A['f'][state]:
+            if len(A['f'][state][transition]) == 0: # The pair (state, transition) is not defined
+                if not added_death_state: # Quicker than checking if <A> is not complete prior to getting into the loop
+                    death_state = A['Q'] # Death state or sink hole
+                    A['Q'] += 1 
+                    added_death_state = True
+                A['f'][state][transition].append(death_state) # Transition to death state
+    return A
+                
 
 def obtain_complement(A1, A2):
     '''
@@ -135,7 +144,12 @@ def obtain_complement_aux(A):
     :param A: a complete DFA
     :output B: A's complement
     '''
-    pass
+    F_ = []
+    for q in range(0, A['Q']):
+        if q not in A['F']: # We just have to reverse final and non-final states
+            F_.append(q)
+    A['F'] = F_
+    return A
 
 def obtain_intersection(A1, A2):
     '''
@@ -152,7 +166,21 @@ def language_is_empty(A):
     :param A: an automata
     :output boolean: True if its language is empty, False otherwise
     '''
-    pass
+    S = set() # Will hold ccessible states of <A> at the end
+    S.add(A['q'])
+    t = set()       
+    count = 0
+    while len(S) < A['Q'] and count < A['Q']:
+        count += 1
+        for state in S:
+            for transition in A['f'][state]:
+                t.update(A['f'][state][transition]) # Accessible states from <S>
+        S.update(t)
+        t.clear()
+    for state in A['F']:
+        if state in S:
+            return False
+    return True
 
 def check_selection(A1, A2):
     try:
@@ -181,18 +209,21 @@ def main(A1, A2):
     :param A2: an automata
     :output boolean: True if equal, False otherwise
     '''
-    print(f"\nInitial automatas: \n\t{A1} \n\t{A2}")
+    util.print_verbose(f"\nInitial automatas: \n\t{A1} \n\t{A2}")
     A1, A2 = transform_DFA(A1, A2)
-    print(f"\n1. Transformation: \n\tA1: \n\t\t{A1} \n\tA2: \n\t\t{A2}")
+    util.print_verbose(f"\n1. Transformation: \n\tA1: \n\t\t{A1} \n\tA2: \n\t\t{A2}")
     A1, A2 = complete_DFA(A1, A2)
+    util.print_verbose(f"\n2. Completion: \n\tA1: \n\t\t{A1} \n\tA2: \n\t\t{A2}")
     B1, B2 = obtain_complement(A1, A2)
+    util.print_verbose(f"\n3. Complements: \n\tB1 (complement of A1): \n\t\t{B1} \n\tB2 (complement of A2): \n\t\t{B2}")
     I1, I2 = obtain_intersection(A1, B2), obtain_intersection(A2, B1)
+    util.print_verbose(f"\n4. Intersections: \n\tA1 and B2: \n\t\t{I1} \n\A2 and B1: \n\t\t{I2}")
     return (language_is_empty(I1) and language_is_empty(I2))
     
 
 class automatas:
     '''
-    - q0: initial state
+    - q: initial state
     - Q: states
     - F: final states
     - A: alphabet
@@ -313,7 +344,11 @@ if __name__ == "__main__":
         global util
         util = utilities(args)
         if check_selection(args.automata_1, args.automata_2):
-            main(A1 = automatas.automata[args.automata_1], A2 = automatas.automata[args.automata_2])
+            equivalent = main(A1 = automatas.automata[args.automata_1], A2 = automatas.automata[args.automata_2])
+            if equivalent:
+                util.print_color("Equivalent!", bcolors.OKGREEN)
+            else:
+                util.print_color("Not equivalent!", bcolors.OKBLUE)
         else:
             util.print_color("[!] Not a valid automata", bcolors.FAIL)
     except Exception as e:
