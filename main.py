@@ -96,6 +96,16 @@ def transform_DFA_aux(A):
                 
                 Aux['f'][statesAux.index(combination)][letter] = [statesAux.index(newCombination)]
 
+                for element in newCombination:
+                    if element in A['F'] and statesAux.index(newCombination) not in Aux['F']: #We add the index to the final states if some state in newcombination is final and the newCombination is not present
+                        Aux['F'].append(statesAux.index(newCombination))
+
+
+    
+    #We add the total number of states to Q
+
+    Aux['Q'] = len(statesAux)
+
     print(A)
     print(statesAux)
     print(Aux)
@@ -162,9 +172,9 @@ def add_arguments(parser):
                         help="Print information as the algorithm progresses",
                         action="store_true")
     parser.add_argument("-a1", "--automata-1", help="Automata 1, from the available list (0, 1, 2, 3)", type=int,
-                default=1)
+                default=0)
     parser.add_argument("-a2", "--automata-2", help="Automata 2, from the available list (0, 1, 2, 3)", type=int,
-                default=2)
+                default=1)
 
 def main(A1, A2):
     '''
@@ -249,7 +259,7 @@ class automatas:
         'A': ['a', 'b'],
         'f': {
             0: {
-                'a': [1,2],
+                'a': [1],
                 'b': [2]
             },
             1: {
