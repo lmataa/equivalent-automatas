@@ -70,11 +70,11 @@ def transform_DFA_aux(A):
         
         #print(f"This is the combination from A: {combination}")
         
-        #Now we have to check what other states is that combination connected through a letter in A
+        #Now we have to find what other states is that combination connected through a letter in A
 
         for letter in A['A']:
 
-            newCombination=set() #This list holds all the states that can be accessed through letter from combination
+            newCombination=set() #This set holds all the states that can be accessed through letter from combination
 
             for state in combination: #we cycle through each state in combination and add the new states that can be accesed
 
