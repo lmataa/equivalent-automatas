@@ -52,8 +52,8 @@ def transform_DFA(A1, A2):
 
 def transform_DFA_aux(A):
     '''
-    Checks if <A> is a DFA and transforms it into a Deterministic Finite Automata if its not
-    :param A: an automata
+    Transforms <A> into a Deterministic Finite Automata <Aux> 
+    :param A: an automata (DFA or NDFA)
     :output A': a DFA
     '''
     Aux = {'q': 0, 'Q': 1, 'F': [], 'A': ['a', 'b'], 'f': { 0: {'a': [], 'b': [] } } } #The transformed automata at the start of the process
@@ -106,9 +106,7 @@ def transform_DFA_aux(A):
 
     Aux['Q'] = len(statesAux)
 
-    print(A)
-    print(statesAux)
-    print(Aux)
+    return Aux
 
 def complete_DFA(A1, A2):
     '''
@@ -183,7 +181,9 @@ def main(A1, A2):
     :param A2: an automata
     :output boolean: True if equal, False otherwise
     '''
+    print(f"\nInitial automatas: \n\t{A1} \n\t{A2}")
     A1, A2 = transform_DFA(A1, A2)
+    print(f"\n1. Transformation: \n\tA1: \n\t\t{A1} \n\tA2: \n\t\t{A2}")
     A1, A2 = complete_DFA(A1, A2)
     B1, B2 = obtain_complement(A1, A2)
     I1, I2 = obtain_intersection(A1, B2), obtain_intersection(A2, B1)
