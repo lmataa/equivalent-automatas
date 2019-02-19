@@ -304,7 +304,8 @@ class automatas:
         }
     }
 
-    A4 = {
+    A4 = A2 # because of reasons.
+    '''{
         'q': 0,
         'Q': 5,
         'F': [1, 2, 3, 4],
@@ -331,7 +332,7 @@ class automatas:
                 'b': []
             }
         }
-    }
+    }'''
     automata = [A1, A2, A3, A4]
 
 
