@@ -151,6 +151,7 @@ def obtain_complement_aux(A):
     A['F'] = F_
     return A
 
+
 def obtain_intersection(A1, A2):
     '''
     Obtains the automata, named I, resulting from the intersection of A1 and A2
@@ -158,7 +159,89 @@ def obtain_intersection(A1, A2):
     :param A2: a complete DFA
     :output I: intersection of A1 and A2
     '''
-    pass
+    # TODO: ===============================================================\
+            
+    # A2['f'][5]={ 'a':[], 'b':[]} # Hay que arreglar la salida del método anterior a este (o el anterior)
+    k = A2['Q']
+    if(len(A2['f'])+1==k):
+        A2['f'][k-1]={'a':[], 'b':[]}
+    k = A1['Q']
+    if(len(A1['f'])+1==k):
+        A1['f'][k-1]={'a':[], 'b':[]} 
+    # TODO: ===============================================================/
+    # print(A1)
+    # print(A2)
+
+    return cross_product(A1, A2)
+
+def cross_product(A, B):
+    assert(A['A'] == B['A']) # they need to have the same alphabet
+    
+    Q_AnB = [] # States
+    for s1 in range(A['Q']): 
+        for s2 in range(B['Q']):
+            Q_AnB.append((s1, s2)) # all states
+    
+    q_AnB = [(A['q'], B['q'])] # initial states
+    
+    F_AnB = [] # Accepted states 
+    for(s1, s2) in Q_AnB:
+        if s1 in A['F'] and s2 in B['F']:
+            F_AnB.append((s1,s2))
+    
+    #Intersection automata
+    R={'q': q_AnB,
+       'Q': len(Q_AnB),
+       'A': A['A'],
+       'f':{}}
+    '''
+    print('1: States: ') 
+    print(Q_AnB)
+    print('2: Initial states:')
+    print(q_AnB)
+    print('3: Accepted states:')
+    print(F_AnB)
+    print('3: Algorithm:')
+    '''
+    # algorithm for delta transitions
+    for (s1,s2) in Q_AnB:
+        a_s1 = A['f'][s1]['a']
+        b_s1 = A['f'][s1]['b']
+        a_s2 = B['f'][s2]['a']
+        b_s2 = B['f'][s2]['b']
+        '''  
+        print((s1,s2))
+        print('init:')
+        print('a_s1:')
+        print(a_s1)
+        print('b_s1:')
+        print(b_s1)
+        print('a_s2')
+        print(a_s2)
+        print('b_s2')
+        print(b_s2)
+        '''   
+        a_comb=[]
+        b_comb=[]
+        if a_s1 != [] and a_s2 != []:
+            for i in a_s1:
+                for j in a_s2:
+                    a_comb.append((i,j))
+        
+        if b_s1 != [] and b_s2 != []:
+            for i in b_s1:
+                for j in b_s2:
+                    b_comb.append((i,j))
+        
+        R['f'][(s1,s2)]={'a': a_comb, 'b': b_comb}
+        ''' 
+        print (R)
+        print((s1,s2))
+        print('end')
+        ''' 
+    return R 
+
+
 
 def language_is_empty(A):
     '''
@@ -166,10 +249,12 @@ def language_is_empty(A):
     :param A: an automata
     :output boolean: True if its language is empty, False otherwise
     '''
+    print('esto es una traza para antes de que pete: linea 230, hacer algo para que los diccionarios acepten \n algo (s1,s2) como key porque sino infierno, el automata se crea bien')
     S = set() # Will hold ccessible states of <A> at the end
     S.add(A['q'])
     t = set()       
     count = 0
+    
     while len(S) < A['Q'] and count < A['Q']:
         count += 1
         for state in S:
@@ -216,9 +301,11 @@ def main(A1, A2):
     util.print_verbose(f"\n2. Completion: \n\tA1: \n\t\t{A1} \n\tA2: \n\t\t{A2}")
     B1, B2 = obtain_complement(A1, A2)
     util.print_verbose(f"\n3. Complements: \n\tB1 (complement of A1): \n\t\t{B1} \n\tB2 (complement of A2): \n\t\t{B2}")
-    I1, I2 = obtain_intersection(A1, B2), obtain_intersection(A2, B1)
-    util.print_verbose(f"\n4. Intersections: \n\tA1 and B2: \n\t\t{I1} \n\A2 and B1: \n\t\t{I2}")
-    return (language_is_empty(I1) and language_is_empty(I2))
+    I = obtain_intersection(A1, B2)
+    print("Autómata de la intersección: ")
+    print(I)
+    util.print_verbose(f"\n4. Intersections: \n\tA1 and B2: \n\t\t{I} ")
+    return (language_is_empty(I))
     
 
 class automatas:
@@ -229,9 +316,11 @@ class automatas:
     - A: alphabet
     - f: transitions
     '''
+    
     A1 = {
         'q': 0,
         'Q': 4,
+        'S': [0, 1, 2, 3],
         'F': [3],
         'A': ['a', 'b'],
         'f': {
@@ -253,7 +342,7 @@ class automatas:
             }
         }
     }
-
+    
     A2 = {
         'q': 0,
         'Q': 5,
@@ -304,7 +393,7 @@ class automatas:
         }
     }
 
-    A4 = {
+    A4 ={
         'q': 0,
         'Q': 5,
         'F': [1, 2, 3, 4],
@@ -332,6 +421,7 @@ class automatas:
             }
         }
     }
+    
     automata = [A1, A2, A3, A4]
 
 
