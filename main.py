@@ -183,7 +183,8 @@ def cross_product(A, B):
             Q_AnB.append((s1, s2)) # all states
     
     q_AnB = [(A['q'], B['q'])] # initial states
-    
+   
+
     F_AnB = [] # Accepted states 
     for(s1, s2) in Q_AnB:
         if s1 in A['F'] and s2 in B['F']:
