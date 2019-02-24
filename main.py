@@ -182,7 +182,7 @@ def cross_product(A, B):
         for s2 in range(B['Q']):
             Q_AnB.append((s1, s2)) # all states
     
-    q_AnB = [(A['q'], B['q'])] # initial states
+    q_AnB = (A['q'], B['q']) # initial states
    
 
     F_AnB = [] # Accepted states 
@@ -193,6 +193,7 @@ def cross_product(A, B):
     #Intersection automata
     R={'q': q_AnB,
        'Q': len(Q_AnB),
+       'F': F_AnB,
        'A': A['A'],
        'f':{}}
     '''
